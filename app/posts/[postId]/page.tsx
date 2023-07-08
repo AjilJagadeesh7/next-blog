@@ -3,7 +3,20 @@ import { notFound } from "next/navigation";
 import moment from "moment";
 import Link from "next/link";
 
-export function generateMetaData({ params }: { params: { postId: string } }) {
+type Params = {
+  params: {
+    postId: string;
+  };
+};
+
+export function generateStaticParams() {
+  const posts = getSortedPostsData();
+  return posts.map((post) => ({
+    postId: post.id,
+  }));
+}
+
+export function generateMetadata({ params }: Params) {
   const posts = getSortedPostsData();
   const { postId } = params;
   const post = posts.find((post) => post.id === postId);
@@ -12,8 +25,9 @@ export function generateMetaData({ params }: { params: { postId: string } }) {
       title: "Post Not Found",
     };
   }
+
   return {
-    title: post?.title,
+    title: post.title,
   };
 }
 
